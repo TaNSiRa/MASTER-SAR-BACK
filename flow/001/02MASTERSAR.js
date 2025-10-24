@@ -78,6 +78,38 @@ router.post('/02MASTERSAR/masterDetail', async (req, res) => {
     }
 });
 
+router.post('/02MASTERSAR/masterStatus', async (req, res) => {
+    //-------------------------------------
+    console.log("--masterStatus--");
+    //-------------------------------------
+    let output = [];
+    let query = `SELECT * From [SAR].[dbo].[master_sar_status];`;
+    let db = await mssql.qurey(query);
+    if (db["recordsets"].length > 0) {
+        let buffer = db["recordsets"][0];
+        output = buffer;
+        return res.status(200).json(output);
+    } else {
+        return res.status(400).json('ไม่พบข้อมูล');
+    }
+});
+
+router.post('/02MASTERSAR/updateMasterStatus', async (req, res) => {
+    //-------------------------------------
+    console.log("--updateMasterStatus--");
+    //-------------------------------------
+    let output = [];
+    let query = `UPDATE [SAR].[dbo].[master_sar_status] SET status = '${req.body.status}', user_action = '${req.body.user}', action_date = GETDATE();`;
+    let db = await mssql.qurey(query);
+    if (db["rowsAffected"][0] > 0) {
+        console.log("Update Success");
+        return res.status(200).json({ message: "Success" });
+    } else {
+        console.log("Update Failed");
+        return res.status(400).json('Update Failed');
+    }
+});
+
 router.post('/02MASTERSAR/getUser', async (req, res) => {
     //-------------------------------------
     console.log("--getUser--");
