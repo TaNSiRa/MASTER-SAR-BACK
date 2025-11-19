@@ -433,6 +433,7 @@ router.post('/02MASTERSAR/addNewCustomer', async (req, res) => {
             pushField("Code", Section);
             pushField("Branch", Branch);
             pushField("Incharge", Incharge);
+            pushField("FrequencyRequest", '1');
             pushField("SampleNo", '1');
             pushField("ItemNo", '1');
             if (NoLab) {
