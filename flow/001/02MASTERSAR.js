@@ -365,12 +365,15 @@ router.post('/02MASTERSAR/addNewCustomer', async (req, res) => {
         const {
             CustFull,
             CustShort,
+            Section,
+            Branch,
             Incharge,
             TYPE,
             GROUP,
             MKTGROUP,
             FRE,
-            REPORTITEMS
+            REPORTITEMS,
+            NoLab
         } = req.body.data;
 
         let fields = [];
@@ -427,9 +430,43 @@ router.post('/02MASTERSAR/addNewCustomer', async (req, res) => {
             fields = [];
             pushField("CustFull", CustFull);
             pushField("CustShort", CustShort);
+            pushField("Code", Section);
+            pushField("Branch", Branch);
             pushField("Incharge", Incharge);
             pushField("SampleNo", '1');
             pushField("ItemNo", '1');
+            if (NoLab) {
+                pushField("SampleGroup", 'NO LAB');
+                pushField("SampleType", 'NO LAB');
+                pushField("SampleTank", 'NO LAB');
+                pushField("SampleName", 'NO LAB');
+                pushField("SampleAmount", '0');
+                pushField("ProcessReportName", 'NO LAB');
+                pushField("Frequency", 'ALL');
+                pushField("InstrumentName", 'NO LAB');
+                pushField("ItemName", 'NO LAB');
+                pushField("ItemReportName", 'NO LAB');
+            }
+            pushField("Position", '-');
+            pushField("Mag", '-');
+            pushField("Temp", '-');
+            pushField("StdMinL", '-');
+            pushField("StdMaxL", '-');
+            pushField("StdFactor", '-');
+            pushField("Std1", '0');
+            pushField("Std2", '0');
+            pushField("Std3", '1');
+            pushField("Std4", '1');
+            pushField("Std5", '0');
+            pushField("Std6", '0');
+            pushField("Std7", '1');
+            pushField("Std8", '1');
+            pushField("Std9", '-');
+            pushField("StdMin", '-');
+            pushField("StdSymbol", '-');
+            pushField("StdMax", '-');
+            pushField("ControlRange", '-');
+            pushField("ReportOrder", '0');
 
             let query = `
             INSERT INTO [SAR].[dbo].[Routine_MasterPatternLab]
