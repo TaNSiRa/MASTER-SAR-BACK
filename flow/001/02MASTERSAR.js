@@ -296,6 +296,7 @@ router.post('/02MASTERSAR/confirmEditData', async (req, res) => {
     try {
         let tableName = req.body.masterType;
         let data = JSON.parse(req.body.data);
+        console.log(data);
         if (!tableName || !Array.isArray(data)) {
             return res.status(400).json({ error: "Missing tableName or data array" });
         }
@@ -327,17 +328,29 @@ router.post('/02MASTERSAR/confirmEditData', async (req, res) => {
                 newIds.add(rowId);
                 const updates = Object.entries(row)
                     .filter(([key, _]) => key !== 'Id' && key !== 'deleted')
-                    .map(([key, value]) => `[${key}] = '${value}'`)
+                    .map(([key, value]) =>
+                        value === null || value === undefined
+                            ? `[${key}] = NULL`
+                            : `[${key}] = N'${value.replace(/'/g, "''")}'`
+                    )
                     .join(', ');
 
                 updateStatements.push(`UPDATE [SAR].[dbo].[${tableName}] SET ${updates} WHERE Id = ${rowId}`);
+                console.log(updateStatements)
             } else if (!isDeleted) {
                 // Insert
                 const rowWithoutId = Object.fromEntries(
                     Object.entries(row).filter(([key, _]) => key !== 'Id' && key !== 'deleted')
                 );
                 const columns = Object.keys(rowWithoutId).map(k => `[${k}]`).join(', ');
-                const values = Object.values(rowWithoutId).map(v => `'${v}'`).join(', ');
+                const values = Object.values(rowWithoutId)
+                    .map(v =>
+                        v === null || v === undefined
+                            ? `NULL`
+                            : `N'${String(v).replace(/'/g, "''")}'`
+                    )
+                    .join(', ');
+
                 insertStatements.push(`INSERT INTO [SAR].[dbo].[${tableName}] (${columns}) VALUES (${values})`);
             }
         }
